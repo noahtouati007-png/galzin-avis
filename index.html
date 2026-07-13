@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Maison Galzin — Votre avis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brown-950: #241811;
+    --brown-800: #3b2a1e;
+    --brown-600: #5c4530;
+    --gold-600: #9c7a3c;
+    --gold-400: #c9a668;
+    --cream-100: #faf6ef;
+    --cream-200: #f3ecdd;
+    --crust-500: #b5622f;
+    --ok-600: #4a7c59;
+    --warn-600: #b5622f;
+    --bad-600: #a13d2f;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Karla', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--cream-100);
+    color: var(--brown-950);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  #app {
+    display: block;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .screen-wrap {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--cream-100);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(156,122,60,0.10) 0%, transparent 45%),
+      radial-gradient(circle at 85% 95%, rgba(181,98,47,0.08) 0%, transparent 40%);
+    padding: 28px 22px 40px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .brandmark { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .brandmark .wheat { width: 26px; height: 26px; flex-shrink: 0; }
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brown-800);
+  }
+  .brand-sub { font-size: 11px; color: var(--gold-600); letter-spacing: 0.08em; margin-top: -2px; }
+
+  .boutique-chip {
+    align-self: flex-start;
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--brown-600);
+    background: var(--cream-200);
+    border: 1px solid rgba(156,122,60,0.35);
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-question {
+    font-family: var(--font-display);
+    font-size: 30px;
+    line-height: 1.18;
+    color: var(--brown-950);
+    margin: 28px 0 6px;
+    font-weight: 600;
+  }
+  .hero-sub { font-size: 14px; color: var(--brown-600); margin-bottom: 32px; line-height: 1.5; }
+
+  .smiley-stack { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+  .smiley-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 18px;
+    border: 1.5px solid rgba(59,42,30,0.12);
+    background: #fff;
+    cursor: pointer;
+    font-family: var(--font-body);
+    text-align: left;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    box-shadow: 0 1px 2px rgba(59,42,30,0.04);
+  }
+  .smiley-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(59,42,30,0.10); }
+  .smiley-btn:active { transform: translateY(0); }
+  .smiley-btn[data-mood="good"]:hover { border-color: var(--ok-600); }
+  .smiley-btn[data-mood="mid"]:hover { border-color: var(--warn-600); }
+  .smiley-btn[data-mood="bad"]:hover { border-color: var(--bad-600); }
+
+  .smiley-emoji { font-size: 30px; line-height: 1; flex-shrink: 0; }
+  .smiley-label { font-weight: 700; font-size: 16px; color: var(--brown-950); display: block; }
+  .smiley-hint { font-size: 12.5px; color: var(--brown-600); margin-top: 2px; display: block; }
+
+  .footer-note { margin-top: auto; padding-top: 32px; font-size: 11px; color: var(--gold-600); text-align: center; letter-spacing: 0.03em; }
+
+  .back-row { display: flex; align-items: center; gap: 8px; color: var(--brown-600); font-size: 13px; cursor: pointer; margin-bottom: 18px; font-weight: 600; width: fit-content; }
+  .mood-banner { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--cream-200); margin-bottom: 22px; }
+  .mood-banner .emoji { font-size: 24px; }
+  .mood-banner .txt { font-size: 13.5px; color: var(--brown-800); font-weight: 600; }
+
+  .field-label { font-size: 13px; font-weight: 700; color: var(--brown-950); margin: 18px 0 8px; }
+  .reason-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .reason-chip {
+    padding: 12px 10px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(59,42,30,0.14);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brown-800);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .reason-chip.selected { background: var(--brown-800); border-color: var(--brown-800); color: #fff; }
+
+  textarea, input[type="text"], input[type="tel"] {
+    width: 100%;
+    border: 1.5px solid rgba(59,42,30,0.14);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--brown-950);
+    background: #fff;
+    resize: none;
+  }
+  textarea:focus, input:focus { outline: 2px solid var(--gold-400); outline-offset: 1px; }
+
+  .contact-toggle { display: flex; gap: 10px; margin-top: 8px; }
+  .toggle-btn { flex: 1; padding: 11px; border-radius: 12px; border: 1.5px solid rgba(59,42,30,0.14); background: #fff; font-weight: 700; font-size: 13.5px; color: var(--brown-800); cursor: pointer; text-align: center; }
+  .toggle-btn.selected { background: var(--gold-600); border-color: var(--gold-600); color: #fff; }
+
+  .submit-btn {
+    margin-top: 26px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: var(--brown-800);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .submit-btn:disabled { background: #cabfb0; cursor: not-allowed; }
+  .submit-btn:not(:disabled):hover { background: var(--brown-950); }
+
+  .confirm-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; padding-top: 60px; }
+  .confirm-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--cream-200); display: flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 22px; }
+  .confirm-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--brown-950); margin-bottom: 10px; }
+  .confirm-sub { font-size: 14px; color: var(--brown-600); line-height: 1.6; max-width: 300px; }
+  .redirect-note { margin-top: 24px; font-size: 12px; color: var(--gold-600); }
+
+  .debug-panel {
+    margin-top: 30px;
+    border-top: 1px dashed rgba(59,42,30,0.2);
+    padding-top: 14px;
+    font-size: 10.5px;
+    color: var(--brown-600);
+    font-family: monospace;
+    white-space: pre-wrap;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-in { animation: fadeIn 0.35s ease; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function () {
+  var root = document.getElementById('app');
+
+  // ---- Config boutiques pilotes (à migrer en Firestore pour le réseau complet) ----
+  var BOUTIQUES = {
+    'carnon': {
+      nom: 'Carnon',
+      adresse: '286 Av. des Comtes de Melgueil, Mauguio',
+      placeId: 'ChIJqygdNWa7thIRrf-4qymRpyg',
+      responsable: 'Responsable boutique Carnon'
+    },
+    'saint-eloi': {
+      nom: 'Saint-Éloi',
+      adresse: '4 Pl. Emile Martin, Montpellier',
+      placeId: 'ChIJJejOOR6vthIRuBSMN0k1qYE',
+      responsable: 'Responsable boutique Saint-Éloi'
+    }
+  };
+
+  var params = new URLSearchParams(window.location.search);
+  var boutiqueKey = params.get('boutique') || 'carnon';
+  var boutique = BOUTIQUES[boutiqueKey] || BOUTIQUES['carnon'];
+  var reviewUrl = 'https://search.google.com/local/writereview?placeid=' + boutique.placeId;
+
+  var state = {
+    screen: 'landing',
+    mood: null,
+    reason: null,
+    detail: '',
+    wantsContact: null,
+    contact: ''
+  };
+
+  // ---- "Backend" simulation (remplacer par Firestore — voir README.md) ----
+  function saveSignalement(payload) {
+    try {
+      var key = 'galzin_signalements_demo';
+      var existing = JSON.parse(localStorage.getItem(key) || '[]');
+      payload.ts = new Date().toISOString();
+      existing.push(payload);
+      localStorage.setItem(key, JSON.stringify(existing));
+      return existing;
+    } catch (e) {
+      console.warn('localStorage indisponible (mode démo) :', e);
+      return [payload];
+    }
+  }
+  function notifyResponsable(payload) {
+    console.log('[ALERTE - ' + boutique.responsable + '] Nouveau signalement (' + payload.mood + ') - motif: ' + (payload.reason || 'n/a'));
+  }
+
+  var REASONS = ['Produit', 'Attente', 'Accueil', 'Commande à la borne', 'Propreté', 'Autre'];
+
+  function render() {
+    root.innerHTML = '';
+    if (state.screen === 'landing') root.appendChild(renderLanding());
+    else if (state.screen === 'form') root.appendChild(renderForm());
+    else root.appendChild(renderConfirm());
+  }
+
+  function wheatIcon() {
+    return '<svg class="wheat" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M12 3V21" stroke="#9C7A3C" stroke-width="1.4" stroke-linecap="round"/>' +
+      '<path d="M12 6L8 4M12 6L16 4M12 9L8 7M12 9L16 7M12 12L8 10M12 12L16 10M12 15L8 13M12 15L16 13" stroke="#9C7A3C" stroke-width="1.3" stroke-linecap="round"/>' +
+      '</svg>';
+  }
+
+  function renderLanding() {
+    var wrap = document.createElement('div');
+    wrap.className = 'screen-wrap anim-in';
+    wrap.innerHTML =
+      '<div class="brandmark">' + wheatIcon() +
+        '<div><div class="brand-name">Maison Galzin</div><div class="brand-sub">Depuis 1938</div></div>' +
+      '</div>' +
+      '<div class="boutique-chip">📍 ' + boutique.nom + '</div>' +
+      '<div class="hero-question">Votre passage<br/>en boutique aujourd\'hui ?</div>' +
+      '<div class="hero-sub">Votre avis nous aide à nous améliorer — ça prend 5 secondes.</div>' +
+      '<div class="smiley-stack">' +
+        '<button class="smiley-btn" data-mood="good"><span class="smiley-emoji">😊</span>' +
+          '<span><span class="smiley-label">Très bien</span><span class="smiley-hint">Tout s\'est bien passé</span></span></button>' +
+        '<button class="smiley-btn" data-mood="mid"><span class="smiley-emoji">😐</span>' +
+          '<span><span class="smiley-label">Moyen</span><span class="smiley-hint">Quelque chose peut être amélioré</span></span></button>' +
+        '<button class="smiley-btn" data-mood="bad"><span class="smiley-emoji">😞</span>' +
+          '<span><span class="smiley-label">Pas satisfait</span><span class="smiley-hint">Un problème pendant votre passage</span></span></button>' +
+      '</div>' +
+      '<div class="footer-note">Maison Galzin — Boulangerie &amp; Pâtisserie</div>';
+
+    var btns = wrap.querySelectorAll('.smiley-btn');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener('click', function (e) {
+        var mood = e.currentTarget.getAttribute('data-mood');
+        state.mood = mood;
+        if (mood === 'good') {
+          state.screen = 'confirm';
+          render();
+          setTimeout(function () { window.location.href = reviewUrl; }, 1400);
+        } else {
+          state.screen = 'form';
+          render();
+        }
+      });
+    }
+    return wrap;
+  }
+
+  function renderForm() {
+    var wrap = document.createElement('div');
+    wrap.className = 'screen-wrap anim-in';
+    var moodEmoji = state.mood === 'mid' ? '😐' : '😞';
+    var moodTxt = state.mood === 'mid'
+      ? "Merci, aidez-nous à comprendre ce qui peut être amélioré."
+      : "Merci de nous en dire un peu plus — on veut faire mieux.";
+
+    var reasonChips = '';
+    for (var i = 0; i < REASONS.length; i++) {
+      reasonChips += '<div class="reason-chip" data-reason="' + REASONS[i] + '">' + REASONS[i] + '</div>';
+    }
+
+    wrap.innerHTML =
+      '<div class="back-row" id="back-btn">← Retour</div>' +
+      '<div class="mood-banner"><span class="emoji">' + moodEmoji + '</span><span class="txt">' + moodTxt + '</span></div>' +
+      '<div class="field-label">Qu\'est-ce qui n\'a pas été ?</div>' +
+      '<div class="reason-grid" id="reason-grid">' + reasonChips + '</div>' +
+      '<div class="field-label">Un détail à ajouter ? (optionnel)</div>' +
+      '<textarea id="detail-input" rows="3" placeholder="Dites-nous en plus si vous le souhaitez..."></textarea>' +
+      '<div class="field-label">Souhaitez-vous qu\'on vous recontacte ?</div>' +
+      '<div class="contact-toggle"><div class="toggle-btn" data-val="yes">Oui</div><div class="toggle-btn" data-val="no">Non</div></div>' +
+      '<div id="contact-field-wrap" style="display:none; margin-top:12px;"><input type="tel" id="contact-input" placeholder="Téléphone ou email" /></div>' +
+      '<button class="submit-btn" id="submit-btn" disabled>Envoyer</button>';
+
+    wrap.querySelector('#back-btn').addEventListener('click', function () {
+      state = { screen: 'landing', mood: null, reason: null, detail: '', wantsContact: null, contact: '' };
+      render();
+    });
+
+    var reasonGrid = wrap.querySelector('#reason-grid');
+    var chips = reasonGrid.querySelectorAll('.reason-chip');
+    for (var j = 0; j < chips.length; j++) {
+      chips[j].addEventListener('click', function (e) {
+        var all = reasonGrid.querySelectorAll('.reason-chip');
+        for (var k = 0; k < all.length; k++) all[k].classList.remove('selected');
+        e.currentTarget.classList.add('selected');
+        state.reason = e.currentTarget.getAttribute('data-reason');
+        updateSubmitState();
+      });
+    }
+
+    wrap.querySelector('#detail-input').addEventListener('input', function (e) {
+      state.detail = e.target.value;
+    });
+
+    var contactWrap = wrap.querySelector('#contact-field-wrap');
+    var contactInput = wrap.querySelector('#contact-input');
+    var toggles = wrap.querySelectorAll('.toggle-btn');
+    for (var t = 0; t < toggles.length; t++) {
+      toggles[t].addEventListener('click', function (e) {
+        var allT = wrap.querySelectorAll('.toggle-btn');
+        for (var m = 0; m < allT.length; m++) allT[m].classList.remove('selected');
+        e.currentTarget.classList.add('selected');
+        state.wantsContact = e.currentTarget.getAttribute('data-val') === 'yes';
+        contactWrap.style.display = state.wantsContact ? 'block' : 'none';
+        updateSubmitState();
+      });
+    }
+    contactInput.addEventListener('input', function (e) {
+      state.contact = e.target.value;
+      updateSubmitState();
+    });
+
+    function updateSubmitState() {
+      var submitBtn = wrap.querySelector('#submit-btn');
+      var contactOk = !state.wantsContact || (state.wantsContact && state.contact.trim().length > 3);
+      submitBtn.disabled = !(state.reason && state.wantsContact !== null && contactOk);
+    }
+
+    wrap.querySelector('#submit-btn').addEventListener('click', function () {
+      var payload = {
+        boutique: boutique.nom,
+        mood: state.mood,
+        reason: state.reason,
+        detail: state.detail,
+        contact: state.wantsContact ? state.contact : null
+      };
+      saveSignalement(payload);
+      notifyResponsable(payload);
+      state.lastPayload = payload;
+      state.screen = 'confirm';
+      render();
+    });
+
+    return wrap;
+  }
+
+  function renderConfirm() {
+    var wrap = document.createElement('div');
+    wrap.className = 'screen-wrap anim-in';
+
+    var icon, title, sub, extra = '';
+    if (state.mood === 'good') {
+      icon = '😊';
+      title = 'Merci !';
+      sub = 'Un avis Google nous aide énormément 🙏 Redirection en cours...';
+      extra = '<div class="redirect-note">Vous allez être redirigé vers la fiche Google de ' + boutique.nom + '</div>';
+    } else {
+      icon = '🙏';
+      title = 'Merci pour votre retour';
+      sub = state.wantsContact
+        ? 'Un responsable de la boutique ' + boutique.nom + ' revient vers vous sous 48h.'
+        : "Votre signalement a été transmis à l'équipe de la boutique.";
+    }
+
+    wrap.innerHTML =
+      '<div class="confirm-wrap">' +
+        '<div class="confirm-icon">' + icon + '</div>' +
+        '<div class="confirm-title">' + title + '</div>' +
+        '<div class="confirm-sub">' + sub + '</div>' +
+        extra +
+      '</div>';
+
+    if (state.mood !== 'good') {
+      var debug = document.createElement('div');
+      debug.className = 'debug-panel';
+      debug.textContent = '// Démo — payload envoyé (à remplacer par Firestore) :\n' + JSON.stringify(state.lastPayload, null, 2);
+      wrap.appendChild(debug);
+    }
+
+    return wrap;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
