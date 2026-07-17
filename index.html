@@ -231,19 +231,27 @@
     contact: ''
   };
 
-  // ---- "Backend" simulation (remplacer par Firestore — voir README.md) ----
+  // ---- Envoi réel vers Make.com (déclenche l'écriture Notion + alerte) ----
+  var MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/ojg7u8gikv0fa6l97ny6rm8u87tzlc5h';
+  var MOOD_LABELS = { mid: 'Moyen', bad: 'Pas satisfait' };
+
   function saveSignalement(payload) {
-    try {
-      var key = 'galzin_signalements_demo';
-      var existing = JSON.parse(localStorage.getItem(key) || '[]');
-      payload.ts = new Date().toISOString();
-      existing.push(payload);
-      localStorage.setItem(key, JSON.stringify(existing));
-      return existing;
-    } catch (e) {
-      console.warn('localStorage indisponible (mode démo) :', e);
-      return [payload];
-    }
+    var body = {
+      boutique: payload.boutique,
+      mood: MOOD_LABELS[payload.mood] || payload.mood,
+      reason: payload.reason,
+      detail: payload.detail || '',
+      wantsContact: !!payload.contact,
+      contact: payload.contact || ''
+    };
+    fetch(MAKE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).catch(function (e) {
+      console.warn('Envoi au webhook impossible (hors-ligne ?), payload perdu :', e);
+    });
+    return body;
   }
   function notifyResponsable(payload) {
     console.log('[ALERTE - ' + boutique.responsable + '] Nouveau signalement (' + payload.mood + ') - motif: ' + (payload.reason || 'n/a'));
